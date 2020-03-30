@@ -4,7 +4,7 @@ ENV LANG="en_US.UTF-8"
 SHELL ["/bin/bash", "-c"]
 
 # Add setup.bash to path.sh
-RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> /opt/path.sh
+RUN echo "source /home/autoware/Autoware/install/setup.bash" >> /opt/path.sh
 
 # Apt update and rosdep update
 RUN apt update && rosdep update
