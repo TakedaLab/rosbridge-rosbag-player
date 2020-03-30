@@ -45,7 +45,8 @@ jobs:
           TAG: ${{ github.ref }}
         shell: bash
         run: |
-          docker build -t hdwlab/rosbridge-rosbag-player:autoware-${TAG##*/} .
+          docker build -t hdwlab/rosbridge-rosbag-player:autoware-${TAG##*/} \
+            -f Dockerfile.autoware .
 
       - name: Push to DockerHub
         env:

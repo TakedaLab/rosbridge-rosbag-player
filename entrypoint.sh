@@ -11,4 +11,4 @@ source /root/.bashrc
 source /opt/path.sh
 
 # execution
-exec $@
+exec "$@"
