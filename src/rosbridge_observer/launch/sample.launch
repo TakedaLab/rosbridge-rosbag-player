@@ -1,0 +1,16 @@
+<!-- -->
+<launch>
+
+    <!-- Configurations -->
+    <arg name="topic_connected_clients" default="/connected_clients" />
+    <arg name="graceful_time" default="5" />
+    <arg name="timeout" default="30" />
+
+    <!-- Node -->
+    <node pkg="rosbridge_observer" type="observer.py" name="rosbridge_observer" output="screen">
+        <param name="topic_connected_clients" value="$(arg topic_connected_clients)"/>
+        <param name="graceful_time" value="$(arg graceful_time)"/>
+        <param name="timeout" value="$(arg timeout)"/>
+    </node>
+
+</launch>

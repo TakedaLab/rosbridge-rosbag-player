@@ -1,0 +1,12 @@
+<!-- -->
+<launch>
+
+    <!-- Configurations -->
+    <arg name="path_to_rosbag" default="" />
+
+    <!-- Node -->
+    <node pkg="controllable_rosbag_player" type="player.py" name="rosbag_player_controller" output="screen">
+        <param name="path_to_rosbag" value="$(arg path_to_rosbag)"/>
+    </node>
+
+</launch>

@@ -1,0 +1,29 @@
+<package format="3">
+    <name>controllable_rosbag_player</name>
+    <version>0.1.0</version>
+    <description>
+        This package provides a controllable rosbag player
+    </description>
+    <maintainer email="hayashi.daiki@hdwlab.co.jp">Daiki Hayashi</maintainer>
+    <license>MIT</license>
+
+    <url>https://</url>
+    <author>Daiki Hayashi</author>
+
+    <buildtool_depend>catkin</buildtool_depend>
+    <buildtool_depend>message_generation</buildtool_depend>
+
+    <depend>rospy</depend>
+    <depend>std_srvs</depend>
+    <depend>message_runtime</depend>
+
+    <exec_depend condition="$ROS_PYTHON_VERSION == 2">python-pycryptodome</exec_depend>
+    <exec_depend condition="$ROS_PYTHON_VERSION == 3">python3-pycryptodome</exec_depend>
+    <exec_depend condition="$ROS_PYTHON_VERSION == 2">python-gnupg</exec_depend>
+    <exec_depend condition="$ROS_PYTHON_VERSION == 3">python3-gnupg</exec_depend>
+    <exec_depend condition="$ROS_PYTHON_VERSION == 2">python-rospkg</exec_depend>
+    <exec_depend condition="$ROS_PYTHON_VERSION == 3">python3-rospkg</exec_depend>
+    <exec_depend condition="$ROS_PYTHON_VERSION == 2">python-yaml</exec_depend>
+    <exec_depend condition="$ROS_PYTHON_VERSION == 3">python3-yaml</exec_depend>
+
+</package>

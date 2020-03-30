@@ -1,0 +1,59 @@
+name: Build and push docker images
+
+on:
+  push:
+    branches:
+      - master
+      - dev
+    tags:
+      - v*
+
+jobs:
+  base:
+    runs-on: ubuntu-18.04
+    timeout-minutes: 300
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Build image
+        env:
+          TAG: ${{ github.ref }}
+        shell: bash
+        run: |
+          docker build -t hdwlab/rosbridge-rosbag-player:base-${TAG##*/} .
+
+      - name: Push to DockerHub
+        env:
+          TAG: ${{ github.ref }}
+          DOCKER_USER: ${{ secrets.DOCKER_USER }}
+          DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
+        shell: bash
+        run: |
+          docker login -u ${DOCKER_USER} -p ${DOCKER_PASS} \
+          && docker push hdwlab/rosbridge-rosbag-player:base-${TAG##*/}
+
+  autoware:
+    runs-on: ubuntu-18.04
+    timeout-minutes: 300
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Build image
+        env:
+          TAG: ${{ github.ref }}
+        shell: bash
+        run: |
+          docker build -t hdwlab/rosbridge-rosbag-player:autoware-${TAG##*/} .
+
+      - name: Push to DockerHub
+        env:
+          TAG: ${{ github.ref }}
+          DOCKER_USER: ${{ secrets.DOCKER_USER }}
+          DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
+        shell: bash
+        run: |
+          docker login -u ${DOCKER_USER} -p ${DOCKER_PASS} \
+          && docker push hdwlab/rosbridge-rosbag-player:autoware-${TAG##*/}
+

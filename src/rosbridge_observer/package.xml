@@ -1,0 +1,18 @@
+<package format="3">
+    <name>rosbridge_observer</name>
+    <version>0.1.0</version>
+    <description>
+        This package provides a observer of rosbridge
+    </description>
+    <maintainer email="hayashi.daiki@hdwlab.co.jp">Daiki Hayashi</maintainer>
+    <license>MIT</license>
+
+    <url>https://</url>
+    <author>Daiki Hayashi</author>
+
+    <buildtool_depend>catkin</buildtool_depend>
+
+    <depend>rospy</depend>
+    <depend>rosbridge_msgs</depend>
+
+</package>

@@ -1,0 +1,28 @@
+<!-- -->
+<launch>
+    <!-- Use simulation time -->
+    <param name="use_sim_time" value="true"/>
+
+    <!-- Configurations -->
+    <arg name="path_to_rosbag" default="" />
+    <arg name="graceful_time" default="5" />
+    <arg name="timeout" default="10" />
+
+    <!-- Rosbridge-server -->
+    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch"/>
+
+    <!-- Controllable Rosbag player -->
+    <node pkg="controllable_rosbag_player" type="player.py"
+          name="rosbag_player_controller" required="true" output="screen" clear_params="true">
+        <param name="path_to_rosbag" value="$(arg path_to_rosbag)"/>
+    </node>
+
+    <!-- ROSBridge observer -->
+    <node pkg="rosbridge_observer" type="observer.py"
+          name="rosbridge_observer" required="true" output="screen" clear_params="true">
+        <param name="topic_connected_clients" value="/connected_clients"/>
+        <param name="graceful_time" value="$(arg graceful_time)"/>
+        <param name="timeout" value="$(arg timeout)"/>
+    </node>
+
+</launch>
