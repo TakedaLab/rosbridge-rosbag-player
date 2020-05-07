@@ -181,13 +181,21 @@ class ControllableRosbagPlayer(object):
         sys.exit(0)
 
     def watch_subprocess(self):
+        fail_count = 0
         while not rospy.is_shutdown():
             time.sleep(1)
             if self.subprocess is None:
                 continue
             if self.subprocess.poll() is not None:
-                rospy.logerr('Subprocess died, so terminating...')
-                os._exit(1)
+                fail_count += 1
+                rospy.logerr('Subprocess is not running (count: {})...'.format(fail_count))
+                if fail_count == 3:
+                    rospy.logerr('Restarting subprocess...')
+                    if not self.set_playback_speed(speed=self.playback_speed):
+                        rospy.logerr('Failed to restart subprocess')
+                        os._exit(1)
+            else:
+                fail_count = 0
 
     def publish_rosbag_info(self):
         while not rospy.is_shutdown():
