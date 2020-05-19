@@ -31,6 +31,7 @@ class ControllableRosbagPlayer(object):
         # initialize node
         self.player_node_name = 'rosbag_player'
         self.is_playing = False
+        self.current_time = rospy.Time().now()
         self.playback_speed = 1.0
         self.rosbag_start_time = 0.0
         self.rosbag_end_time = 0.0
@@ -38,6 +39,9 @@ class ControllableRosbagPlayer(object):
         # initialize publishers
         self.start_time_publisher = rospy.Publisher('~rosbag_start_time', Clock, queue_size=1)
         self.end_time_publisher = rospy.Publisher('~rosbag_end_time', Clock, queue_size=1)
+
+        # initialize subscribers
+        self.subscriber = rospy.Subscriber('/clock', Clock, self._callback_clock, queue_size=1)
 
         # get ros-param
         self.path_to_rosbag = rospy.get_param('~path_to_rosbag', None)
@@ -62,6 +66,9 @@ class ControllableRosbagPlayer(object):
 
         # open rosbag
         self._open_rosbag()
+
+    def _callback_clock(self, msg):
+        self.current_time = msg.clock
 
     def _analyze_rosbag(self, path_to_rosbag):
         with rosbag.Bag(path_to_rosbag, 'r') as bag:
@@ -147,7 +154,7 @@ class ControllableRosbagPlayer(object):
             (bool): True if succeeded, otherwise False
 
         """
-        current_time = rospy.Time.now().to_sec()
+        current_time = self.current_time
         if current_time < self.rosbag_start_time or current_time > self.rosbag_end_time:
             target_time = 0.0
         else:
