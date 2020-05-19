@@ -15,7 +15,7 @@ RUN bash -c '\
   && source /opt/path.sh \
   && mkdir -p /opt/catkin_workspace \
   && cd /opt/catkin_workspace \
-  && git clone --depth=1 -b 0.11.5 https://github.com/RobotWebTools/rosbridge_suite.git src \
+  && git clone --depth=1 -b 0.11.7 https://github.com/RobotWebTools/rosbridge_suite.git src \
   && cd src \
   && catkin_init_workspace \
   && cd .. \
