@@ -154,7 +154,7 @@ class ControllableRosbagPlayer(object):
             (bool): True if succeeded, otherwise False
 
         """
-        current_time = self.current_time
+        current_time = self.current_time.to_sec()
         if current_time < self.rosbag_start_time or current_time > self.rosbag_end_time:
             target_time = 0.0
         else:
