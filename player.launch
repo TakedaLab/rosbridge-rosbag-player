@@ -7,9 +7,12 @@
     <arg name="path_to_rosbag" default="" />
     <arg name="graceful_time" default="5" />
     <arg name="timeout" default="60" />
+    <arg name="websocket_external_port" default="None" />
 
     <!-- Rosbridge-server -->
-    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch"/>
+    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch">
+        <arg name="websocket_external_port" value="$(arg websocket_external_port)" />
+    </include>
 
     <!-- Controllable Rosbag player -->
     <node pkg="controllable_rosbag_player" type="player.py"
