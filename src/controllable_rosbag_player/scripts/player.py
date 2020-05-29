@@ -128,6 +128,10 @@ class ControllableRosbagPlayer(object):
             (bool): True if succeeded, otherwise False
 
         """
+        if start_time > 1000000000:
+            start_time -= self.rosbag_start_time
+        if start_time < 0:
+            return False
         if start_time + self.rosbag_start_time > self.rosbag_end_time:
             return False
         try:
