@@ -37,8 +37,8 @@ class ControllableRosbagPlayer(object):
         self.rosbag_end_time = 0.0
 
         # initialize publishers
-        self.start_time_publisher = rospy.Publisher('~rosbag_start_time', Clock, queue_size=1)
-        self.end_time_publisher = rospy.Publisher('~rosbag_end_time', Clock, queue_size=1)
+        self.start_time_publisher = rospy.Publisher('~rosbag_start_time', Clock, queue_size=1, latch=True)
+        self.end_time_publisher = rospy.Publisher('~rosbag_end_time', Clock, queue_size=1, latch=True)
 
         # initialize subscribers
         self.subscriber = rospy.Subscriber('/clock', Clock, self._callback_clock, queue_size=1)
@@ -59,10 +59,8 @@ class ControllableRosbagPlayer(object):
         # analyze rosbag
         self._analyze_rosbag(self.path_to_rosbag)
 
-        # start publisher
-        self.rosbag_info_publisher = threading.Thread(target=self.publish_rosbag_info)
-        self.rosbag_info_publisher.setDaemon(True)
-        self.rosbag_info_publisher.start()
+        # publish rosbag info
+        self.publish_rosbag_info()
 
         # open rosbag
         self._open_rosbag()
@@ -209,16 +207,14 @@ class ControllableRosbagPlayer(object):
                 fail_count = 0
 
     def publish_rosbag_info(self):
-        while not rospy.is_shutdown():
-            rosbag_start_time = Clock()
-            rosbag_start_time.clock.secs = int(self.rosbag_start_time)
-            rosbag_start_time.clock.nsecs = int((self.rosbag_start_time % 1) * (10 ** 9))
-            rosbag_end_time = Clock()
-            rosbag_end_time.clock.secs = int(self.rosbag_end_time)
-            rosbag_end_time.clock.nsecs = int((self.rosbag_end_time % 1) * (10 ** 9))
-            self.start_time_publisher.publish(rosbag_start_time)
-            self.end_time_publisher.publish(rosbag_end_time)
-            time.sleep(0.1)
+        rosbag_start_time = Clock()
+        rosbag_start_time.clock.secs = int(self.rosbag_start_time)
+        rosbag_start_time.clock.nsecs = int((self.rosbag_start_time % 1) * (10 ** 9))
+        rosbag_end_time = Clock()
+        rosbag_end_time.clock.secs = int(self.rosbag_end_time)
+        rosbag_end_time.clock.nsecs = int((self.rosbag_end_time % 1) * (10 ** 9))
+        self.start_time_publisher.publish(rosbag_start_time)
+        self.end_time_publisher.publish(rosbag_end_time)
 
 
 def callback_srv_play(data):
