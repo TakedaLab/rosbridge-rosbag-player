@@ -116,11 +116,12 @@ class ControllableRosbagPlayer(object):
             rospy.logerr(e)
             return False
 
-    def seek(self, start_time):
+    def seek(self, start_time, force_play=False):
         """Seek rosbag-player.
 
         Args:
             start_time (float): start time to seek
+            force_play (bool): if True, rosbag will be played after seeking regardless of current status
 
         Returns:
             (bool): True if succeeded, otherwise False
@@ -138,7 +139,7 @@ class ControllableRosbagPlayer(object):
                        start_time,
                        self.playback_speed,
                        self.common_options)
-            if not self.is_playing:
+            if not self.is_playing and not force_play:
                 command += ' --pause'
             self.subprocess = subprocess.Popen(command, shell=True)
             rospy.logdebug('Sent command: {}'.format(command))
@@ -253,6 +254,18 @@ def callback_srv_seek(data):
     return res
 
 
+def callback_srv_seek_and_play(data):
+    """Seek and play rosbag-player."""
+    res = SeekResponse()
+    if player.seek(data.time, force_play=True):
+        res.message = 'success'
+        res.success = True
+    else:
+        res.message = 'failed'
+        res.success = False
+    return res
+
+
 def callback_srv_set_playback_speed(data):
     """Set playback speed of rosbag-playback."""
     res = SetPlaybackSpeedResponse()
@@ -278,6 +291,7 @@ if __name__ == '__main__':
     srv_play = rospy.Service('~play', Trigger, callback_srv_play)
     srv_pause = rospy.Service('~pause', Trigger, callback_srv_pause)
     srv_seek = rospy.Service('~seek', Seek, callback_srv_seek)
+    srv_seek_and_play = rospy.Service('~seek_and_play', Seek, callback_srv_seek_and_play)
     srv_set_playback_speed = rospy.Service('~set_playback_speed',
                                            SetPlaybackSpeed,
                                            callback_srv_set_playback_speed)
