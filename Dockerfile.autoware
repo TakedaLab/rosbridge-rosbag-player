@@ -6,9 +6,6 @@ SHELL ["/bin/bash", "-c"]
 # Add setup.bash to path.sh
 RUN echo "source /home/autoware/Autoware/install/setup.bash" >> /opt/path.sh
 
-# Apt update and rosdep update
-RUN apt update && rosdep update
-
 # Install rosbridge
 RUN bash -c '\
   source /root/.bashrc \
@@ -19,13 +16,22 @@ RUN bash -c '\
   && cd src \
   && catkin_init_workspace \
   && cd .. \
+  && apt update \
+  && rosdep update \
   && rosdep install --from-paths src --ignore-src -r -y \
   && catkin_make \
   && echo "source /opt/catkin_workspace/devel/setup.bash" >> /opt/path.sh \
+  && apt -y clean \
+  && rm -rf /var/lib/apt/lists/* \
 '
 
+# Remove the originally installed rosbridge-suite
+RUN apt update \
+  && apt -y remove ros-${ROS_DISTRO}-rosbridge-suite \
+  && apt -y clean \
+  && rm -rf /var/lib/apt/lists/*
+
 # Install rosbridge-rosbag-player
-RUN apt -y remove ros-${ROS_DISTRO}-rosbridge-suite
 RUN mkdir -p /opt/rosbridge-rosbag-player/src
 COPY ./src /opt/rosbridge-rosbag-player/src
 RUN bash -c '\
@@ -34,13 +40,17 @@ RUN bash -c '\
   && cd /opt/rosbridge-rosbag-player/src \
   && catkin_init_workspace \
   && cd .. \
+  && apt update \
+  && rosdep update \
   && rosdep install --from-paths src --ignore-src -r -y \
   && catkin_make \
   && echo "source /opt/rosbridge-rosbag-player/devel/setup.bash" >> /opt/path.sh \
+  && apt -y clean \
+  && rm -rf /var/lib/apt/lists/* \
 '
 
-# Remove unnecessary files
-RUN apt autoremove -y && apt clean -y
+# Copy sample files
+COPY ./samples /opt/samples
 
 # Set entry-point
 COPY ./entrypoint.sh /entrypoint.sh
