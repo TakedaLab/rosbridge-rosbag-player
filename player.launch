@@ -4,7 +4,7 @@
     <param name="use_sim_time" value="true"/>
 
     <!-- Configurations -->
-    <arg name="path_to_rosbag" default="$(optenv PATH_TO_ROSBAG)" />
+    <arg name="path_to_rosbag" default="$(optenv PATH_TO_ROSBAG /opt/samples/sample.bag)" />
     <arg name="graceful_time" default="5" />
     <arg name="timeout" default="60" />
     <arg name="websocket_external_port" default="$(optenv WEBSOCKET_EXTERNAL_PORT None)" />

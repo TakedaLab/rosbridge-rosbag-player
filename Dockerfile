@@ -6,9 +6,6 @@ SHELL ["/bin/bash", "-c"]
 # Add setup.bash to path.sh
 RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> /opt/path.sh
 
-# Apt update and rosdep update
-RUN apt update && rosdep update
-
 # Install rosbridge
 RUN bash -c '\
   source /root/.bashrc \
@@ -19,9 +16,13 @@ RUN bash -c '\
   && cd src \
   && catkin_init_workspace \
   && cd .. \
+  && apt update \
+  && rosdep update \
   && rosdep install --from-paths src --ignore-src -r -y \
   && catkin_make \
   && echo "source /opt/catkin_workspace/devel/setup.bash" >> /opt/path.sh \
+  && apt -y clean \
+  && rm -rf /var/lib/apt/lists/* \
 '
 
 # Install rosbridge-rosbag-player
@@ -33,13 +34,17 @@ RUN bash -c '\
   && cd /opt/rosbridge-rosbag-player/src \
   && catkin_init_workspace \
   && cd .. \
+  && apt update \
+  && rosdep update \
   && rosdep install --from-paths src --ignore-src -r -y \
   && catkin_make \
   && echo "source /opt/rosbridge-rosbag-player/devel/setup.bash" >> /opt/path.sh \
+  && apt -y clean \
+  && rm -rf /var/lib/apt/lists/* \
 '
 
-# Remove unnecessary files
-RUN apt autoremove -y && apt clean -y
+# Copy sample files
+COPY ./samples /opt/samples
 
 # Set entry-point
 COPY ./entrypoint.sh /entrypoint.sh
